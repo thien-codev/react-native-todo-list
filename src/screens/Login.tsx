@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import { View, Text, Button, SafeAreaView, StyleSheet, TextInput, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 
-const Login = () => {
+function Login({ navigation }) {
     const [username, setUsername] = useState({ value: "", error: "" })
     const [password, setPassword] = useState({ value: "", error: "" })
 
     const onPressLogin = () => {
         console.log("Login with username: " + username.value + " password: " + password.value)
+        navigation.navigate("Home")
     }
     const onPressForgotPassword = () => {
         console.log("Login with username: " + username.value + " password: " + password.value)
