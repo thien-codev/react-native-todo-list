@@ -25,6 +25,8 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
+import Login from "./src/screens/Login";
+
 type SectionProps = PropsWithChildren<{
   title: string;
 }>;
@@ -115,4 +117,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+export default Login;
