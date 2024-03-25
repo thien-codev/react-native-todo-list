@@ -2,12 +2,18 @@ import React, { useState } from "react";
 import { View, Text, Button, SafeAreaView, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 
 const Home = ({ navigation }) => {
-return(
-    <View style={styles.container}>
-        <Button title={"Go back"} onPress={navigation.goBack}></Button>
-        <Text style={styles.title}>Mission completed!</Text>
-    </View>
-)
+    const goBack = () => {
+        navigation.reset({
+            index: 1,
+            routes: [{ name: "Login" }]
+        })
+    }
+    return (
+        <View style={styles.container}>
+            <Button title={"Logout"} onPress={goBack}></Button>
+            <Text style={styles.title}>Mission completed!</Text>
+        </View>
+    )
 }
 
 const styles = StyleSheet.create({
