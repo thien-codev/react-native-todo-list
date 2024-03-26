@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import { usernameValidator } from "../helpers/usernameValidator";
 import { passwordValidator } from "../helpers/passwordValidator";
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, SafeAreaView } from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, SafeAreaView, Image } from "react-native";
 import BackButton from "../components/BackButton";
-// import { SafeAreaView } from "../../node_modules/react-native-safe-area-context/lib/typescript/src/SafeAreaView";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function SignUp({ navigation }) {
     const [username, setUsername] = useState({ value: "", error: "" })
     const [password, setPassword] = useState({ value: "", error: "" })
+    const [visiblePassword, setVisiblePassword] = useState(false)
 
-    function onPressSignUp() {
+    const onPressSignUp = () => {
         const usernameErr = usernameValidator(username.value)
         const passwordErr = passwordValidator(password.value)
 
@@ -19,8 +20,22 @@ function SignUp({ navigation }) {
             return
         }
 
-        navigation.goBack
+        const credential = { username: username.value, password: password.value }
+        storeData(credential)
+
+        navigation.navigate("Login")
     }
+
+    const storeData = async (value) => {
+        try {
+            const jsonValue = JSON.stringify(value)
+            await AsyncStorage.setItem("credential", jsonValue)
+            console.log(jsonValue)
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
     return (
         <SafeAreaView style={styles.safeArea}>
             <BackButton style={styles.backButton} goBack={navigation.goBack}></BackButton>
@@ -39,12 +54,20 @@ function SignUp({ navigation }) {
 
                 <View style={styles.inputView}>
                     <View style={styles.inputTextView}>
-                        <TextInput
-                            secureTextEntry
-                            style={styles.textField}
-                            placeholder="Password"
-                            placeholderTextColor="#003f5c"
-                            onChangeText={text => setPassword({ value: text, error: "" })}></TextInput>
+                        <View style={styles.passwordContainer}>
+                            <TextInput
+                                secureTextEntry={!visiblePassword}
+                                style={styles.textField}
+                                placeholder="Password"
+                                placeholderTextColor="#003f5c"
+                                onChangeText={text => setPassword({ value: text, error: "" })}></TextInput>
+                            <TouchableOpacity onPress={() => setVisiblePassword(!visiblePassword)}>
+                                <Image
+                                    source={require("../assets/view.png")}
+                                    style={styles.viewImage}
+                                />
+                            </TouchableOpacity>
+                        </View>
                     </View>
                     <Text style={styles.errorText}>{password.error}</Text><Text />
                 </View>
@@ -61,6 +84,14 @@ const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
         backgroundColor: "#003f5c"
+    },
+    viewImage: {
+        width: 24,
+        height: 24,
+        tintColor: "white",
+        right: 0,
+        position: "absolute",
+        bottom: -4
     },
     backButton: {
         marginLeft: 10,

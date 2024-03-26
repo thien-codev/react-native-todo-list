@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { usernameValidator } from "../helpers/usernameValidator";
 import { passwordValidator } from "../helpers/passwordValidator";
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function Login({ navigation }) {
     const [username, setUsername] = useState({ value: "", error: "" })
@@ -11,22 +12,32 @@ function Login({ navigation }) {
         const usernameErr = usernameValidator(username.value)
         const passwordErr = passwordValidator(password.value)
 
-        if (usernameErr || passwordErr) {
-            setUsername({ ...username, error: usernameErr })
-            setPassword({ ...password, error: passwordErr })
-            return
-        }
+        // if (usernameErr || passwordErr) {
+        //     setUsername({ ...username, error: usernameErr })
+        //     setPassword({ ...password, error: passwordErr })
+        //     return
+        // }
+        const credential = getCredential()
+        console.log(credential)
 
-        navigation.reset({
-            index: 0,
-            routes: [{ name: "Home" }]
-        })
+        // navigation.reset({
+        //     index: 0,
+        //     routes: [{ name: "Home" }]
+        // })
     }
     const onPressForgotPassword = () => {
         console.log("Login with username: " + username.value + " password: " + password.value)
     }
     const onPressSignUp = () => {
         navigation.navigate("SignUp")
+    }
+    const getCredential = async () => {
+        try {
+            const jsonValue = await AsyncStorage.getItem("credential")
+            return jsonValue != null ? JSON.parse(jsonValue) : null
+        } catch (e) {
+            console.log(e)
+        }
     }
 
     return (
