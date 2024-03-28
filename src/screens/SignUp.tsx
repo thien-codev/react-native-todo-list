@@ -23,14 +23,14 @@ function SignUp({ navigation }) {
         const credential = { username: username.value, password: password.value }
         storeData(credential)
 
-        navigation.navigate("Login")
+        // navigation.navigate("Login")
     }
 
     const storeData = async (value) => {
         try {
             const jsonValue = JSON.stringify(value)
-            await AsyncStorage.setItem("credential", jsonValue)
-            console.log(jsonValue)
+            await AsyncStorage.setItem('credential', jsonValue)
+            await getStoredData()
         } catch (e) {
             console.log(e)
         }

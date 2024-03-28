@@ -1,29 +1,31 @@
 import React, { useState } from "react";
 import { usernameValidator } from "../helpers/usernameValidator";
 import { passwordValidator } from "../helpers/passwordValidator";
-import { View, Text, StyleSheet, TextInput, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function Login({ navigation }) {
     const [username, setUsername] = useState({ value: "", error: "" })
     const [password, setPassword] = useState({ value: "", error: "" })
 
-    const onPressLogin = () => {
+    const onPressLogin = async () => {
         const usernameErr = usernameValidator(username.value)
         const passwordErr = passwordValidator(password.value)
 
-        // if (usernameErr || passwordErr) {
-        //     setUsername({ ...username, error: usernameErr })
-        //     setPassword({ ...password, error: passwordErr })
-        //     return
-        // }
-        const credential = getCredential()
-        console.log(credential)
-
-        // navigation.reset({
-        //     index: 0,
-        //     routes: [{ name: "Home" }]
-        // })
+        if (usernameErr || passwordErr) {
+            setUsername({ ...username, error: usernameErr })
+            setPassword({ ...password, error: passwordErr })
+            return
+        }
+        const credential = await getCredential()
+        if (credential.username == username.value && credential.password == password.value) {
+            navigation.reset({
+                index: 0,
+                routes: [{ name: "Home" }]
+            })
+        } else {
+            showWrongCredentialAlert()
+        }
     }
     const onPressForgotPassword = () => {
         console.log("Login with username: " + username.value + " password: " + password.value)
@@ -31,14 +33,26 @@ function Login({ navigation }) {
     const onPressSignUp = () => {
         navigation.navigate("SignUp")
     }
+
     const getCredential = async () => {
         try {
-            const jsonValue = await AsyncStorage.getItem("credential")
-            return jsonValue != null ? JSON.parse(jsonValue) : null
+            const value = await AsyncStorage.getItem("credential")
+            if (value !== null) {
+                return JSON.parse(value)
+            }
+
         } catch (e) {
             console.log(e)
         }
     }
+
+    const showWrongCredentialAlert = () =>
+        Alert.alert('Login fail', 'Incorrect username or password.', [
+            {
+                text: 'Ok',
+                style: 'cancel',
+            }
+        ]);
 
     return (
         <View style={styles.container}>
