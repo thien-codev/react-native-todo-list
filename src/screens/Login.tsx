@@ -28,7 +28,7 @@ function Login({ navigation }) {
         }
     }
     const onPressForgotPassword = () => {
-        console.log("Login with username: " + username.value + " password: " + password.value)
+        navigation.navigate("ResetPassword")
     }
     const onPressSignUp = () => {
         navigation.navigate("SignUp")

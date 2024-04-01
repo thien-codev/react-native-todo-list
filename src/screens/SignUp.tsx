@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { usernameValidator } from "../helpers/usernameValidator";
 import { passwordValidator } from "../helpers/passwordValidator";
+import { emailValidator } from "../helpers/emailValidator";
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, SafeAreaView, Image } from "react-native";
 import BackButton from "../components/BackButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -8,22 +9,25 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 function SignUp({ navigation }) {
     const [username, setUsername] = useState({ value: "", error: "" })
     const [password, setPassword] = useState({ value: "", error: "" })
+    const [email, setEmail] = useState({ value: "", error: "" })
     const [visiblePassword, setVisiblePassword] = useState(false)
 
     const onPressSignUp = () => {
         const usernameErr = usernameValidator(username.value)
         const passwordErr = passwordValidator(password.value)
+        const emailErr = emailValidator(email.value)
 
-        if (usernameErr || passwordErr) {
+        if (usernameErr || passwordErr || emailErr) {
             setUsername({ ...username, error: usernameErr })
             setPassword({ ...password, error: passwordErr })
+            setEmail({ ...email, error: emailErr })
             return
         }
 
-        const credential = { username: username.value, password: password.value }
+        const credential = { email: email.value, username: username.value, password: password.value }
         storeData(credential)
 
-        // navigation.navigate("Login")
+        navigation.navigate("Login")
     }
 
     const storeData = async (value) => {
@@ -41,6 +45,18 @@ function SignUp({ navigation }) {
             <BackButton style={styles.backButton} goBack={navigation.goBack}></BackButton>
             <View style={styles.container}>
                 <Text style={styles.title}>Sign up</Text>
+
+                <View style={styles.inputView}>
+                    <View style={styles.inputTextView}>
+                        <TextInput
+                            style={styles.textField}
+                            placeholder="Email"
+                            placeholderTextColor="#003f5c"
+                            onChangeText={text => setEmail({ value: text, error: "" })}></TextInput>
+                    </View>
+                    <Text style={styles.errorText}>{email.error}</Text><Text />
+                </View>
+
                 <View style={styles.inputView}>
                     <View style={styles.inputTextView}>
                         <TextInput
