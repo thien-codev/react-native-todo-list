@@ -2,13 +2,52 @@ import React from "react";
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, SafeAreaView, ActivityIndicator } from "react-native";
 import BackButton from "../components/BackButton";
 import { useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ResetPassword = ({ navigation }) => {
     const [email, setEmail] = useState({ value: "", error: "" })
+    const [password, setPassword] = useState({ value: "", error: "" });
     const [isLoading, setIsLoading] = useState(false)
+    const [isValidEmail, setIsValidEmail] = useState(false);
 
-    const onPressLogin = () => {
+    const onAction = async () => {
+        setIsLoading(true)
+        if (!isValidEmail) {
+            const credential = await findCredentialByEmail()
+            if (credential.email == email.value) {
+                console.log(credential.email, email.value)
+                setIsValidEmail(true)
+            } else {
+                console.log(credential.email, email.value)
+                setIsValidEmail(false)
+            }
+        } else {
+            await saveNewPassword()
+            navigation.replace("Login")
+        }
+        setIsLoading(false)
+    }
 
+    const findCredentialByEmail = async () => {
+        try {
+            const value = await AsyncStorage.getItem("credential")
+            if (value !== null) {
+                return JSON.parse(value)
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    const saveNewPassword = async () => {
+        try {
+            const credential = await findCredentialByEmail()
+            credential.password = password.value
+            const jsonValue = JSON.stringify(credential)
+            await AsyncStorage.setItem('credential', jsonValue)
+        } catch (e) {
+            console.log(e)
+        }
     }
 
     return (
@@ -27,82 +66,45 @@ const ResetPassword = ({ navigation }) => {
                         </View>
                         <Text style={styles.errorText}>{email.error}</Text><Text />
                     </View>
+                    {(() => {
+                        if (isValidEmail) {
+                            return (
+                                <View style={{ width: "100%" }}>
+                                    <View style={styles.inputView}>
+                                        <View style={styles.inputTextView}>
+                                            <TextInput
+                                                secureTextEntry
+                                                style={styles.textField}
+                                                placeholder="New password"
+                                                placeholderTextColor="#003f5c" />
+                                        </View>
+                                        <Text style={styles.errorText}>{email.error}</Text><Text />
+                                    </View>
 
-                    <View style={styles.inputView}>
-                        <View style={styles.inputTextView}>
-                            <TextInput
-                                secureTextEntry
-                                style={styles.textField}
-                                placeholder="New password"
-                                placeholderTextColor="#003f5c"
-                                onChangeText={text => setEmail({ value: text, error: "" })}></TextInput>
-                        </View>
-                        <Text style={styles.errorText}>{email.error}</Text><Text />
-                    </View>
+                                    <View style={styles.inputView}>
+                                        <View style={styles.inputTextView}>
+                                            <TextInput
+                                                secureTextEntry
+                                                style={styles.textField}
+                                                placeholder="Repeat password"
+                                                placeholderTextColor="#003f5c"
+                                                onChangeText={text => setPassword({ value: text, error: "" })}></TextInput>
+                                        </View>
+                                        <Text style={styles.errorText}>{email.error}</Text><Text />
+                                    </View>
+                                </View>
+                            )
+                        }
+                    })()}
 
-                    <View style={styles.inputView}>
-                        <View style={styles.inputTextView}>
-                            <TextInput
-                                secureTextEntry
-                                style={styles.textField}
-                                placeholder="Repeat password"
-                                placeholderTextColor="#003f5c"
-                                onChangeText={text => setEmail({ value: text, error: "" })}></TextInput>
-                        </View>
-                        <Text style={styles.errorText}>{email.error}</Text><Text />
-                    </View>
 
-                    <TouchableOpacity style={styles.loginButton} onPress={onPressLogin}>
-                        <Text style={styles.loginText}>SAVE</Text>
+                    <TouchableOpacity style={styles.loginButton} onPress={onAction}>
+                        <Text style={styles.loginText}>{isValidEmail ? "SAVE" : "FIND"}</Text>
                     </TouchableOpacity>
                 </View>
-                <ActivityIndicator style={styles.loadingIndicator}></ActivityIndicator>
-            </View >
-
-            {/* <View style={styles.inputView}>
-                    <View style={styles.inputTextView}>
-                        <TextInput
-                            style={styles.textField}
-                            placeholder="Email"
-                            placeholderTextColor="#003f5c"
-                            onChangeText={text => setEmail({ value: text, error: "" })}></TextInput>
-                    </View>
-                    <Text style={styles.errorText}>{email.error}</Text><Text />
-                </View>
-
-                <View style={styles.inputView}>
-                    <View style={styles.inputTextView}>
-                        <TextInput
-                            style={styles.textField}
-                            placeholder="Username"
-                            placeholderTextColor="#003f5c"
-                            onChangeText={text => setUsername({ value: text, error: "" })}></TextInput>
-                    </View>
-                    <Text style={styles.errorText}>{username.error}</Text><Text />
-                </View>
-
-                <View style={styles.inputView}>
-                    <View style={styles.inputTextView}>
-                        <View style={styles.passwordContainer}>
-                            <TextInput
-                                secureTextEntry={!visiblePassword}
-                                style={styles.textField}
-                                placeholder="Password"
-                                placeholderTextColor="#003f5c"
-                                onChangeText={text => setPassword({ value: text, error: "" })}></TextInput>
-                            <TouchableOpacity onPress={() => setVisiblePassword(!visiblePassword)}>
-                                <Image
-                                    source={require("../assets/view.png")}
-                                    style={styles.viewImage}
-                                />
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                    <Text style={styles.errorText}>{password.error}</Text><Text />
-                </View> */}
-
-
-        </SafeAreaView>
+                {isLoading && <ActivityIndicator style={styles.loadingIndicator}></ActivityIndicator>}
+            </View>
+        </SafeAreaView >
     )
 }
 
@@ -131,9 +133,10 @@ const styles = StyleSheet.create({
         left: "48%"
     },
     title: {
-        fontSize: 50,
+        fontSize: 40,
         fontWeight: "bold",
-        color: "#fb5b5a"
+        color: "#fb5b5a",
+        marginBottom: 20
     },
     inputTextView: {
         backgroundColor: "#465881",
