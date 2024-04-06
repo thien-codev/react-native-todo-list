@@ -20,6 +20,7 @@ const ResetPassword = ({ navigation }) => {
             } else {
                 console.log(credential.email, email.value)
                 setIsValidEmail(false)
+                showWrongEmail()
             }
         } else {
             await saveNewPassword()
@@ -49,6 +50,14 @@ const ResetPassword = ({ navigation }) => {
             console.log(e)
         }
     }
+
+    const showWrongEmail = () =>
+    Alert.alert('Reset fail', 'Incorrect email.', [
+      {
+        text: 'Ok',
+        style: 'cancel',
+      },
+    ]);
 
     return (
         <SafeAreaView style={styles.safeArea}>

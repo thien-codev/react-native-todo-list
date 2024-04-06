@@ -3,7 +3,10 @@ import { View, Text, Button, SafeAreaView, StyleSheet, TextInput, TouchableOpaci
 
 const Home = ({ navigation }) => {
     const goBack = () => {
-        navigation.navigate("Login")
+        navigation.reset({
+            index: 0,
+            routes: [{name: 'Login'}],
+          });
     }
     return (
         <View style={styles.container}>
