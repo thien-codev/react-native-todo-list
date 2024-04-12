@@ -10,8 +10,11 @@ import {
   Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useIsLoggedIn } from '../helpers/useIsLoggedIn';
 
 function Login({navigation}) {
+  const [_, setIsLoggedIn] = useIsLoggedIn();
+
   const [username, setUsername] = useState({value: '', error: ''});
   const [password, setPassword] = useState({value: '', error: ''});
 
@@ -29,9 +32,10 @@ function Login({navigation}) {
       credential.username == username.value &&
       credential.password == password.value
     ) {
+      setIsLoggedIn(true);
       navigation.reset({
         index: 0,
-        routes: [{name: 'Home'}],
+        routes: [{name: 'HomeTabbar'}],
       });
     } else {
       showWrongCredentialAlert();

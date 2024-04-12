@@ -1,9 +1,8 @@
-import {Image, StyleSheet, View, Animated} from 'react-native';
-import {useState, useRef, useEffect} from 'react';
+import {Image, StyleSheet, Animated} from 'react-native';
+import {useRef, useEffect} from 'react';
 
 const Splash = () => {
-
-    const fadeAnim = useRef(new Animated.Value(0)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
 
   const fadeIn = () => {
     // Will change fadeAnim value to 1 in 5 seconds
@@ -16,15 +15,13 @@ const Splash = () => {
 
   useEffect(() => {
     setTimeout(() => {
-        fadeIn();
+      fadeIn();
     }, 1000);
-  })
+  });
 
   return (
     <Animated.View style={[styles.container, {opacity: fadeAnim}]}>
-      <Image
-        source={require('../assets/splash.png')}
-      />
+      <Image source={require('../assets/splash.png')} />
     </Animated.View>
   );
 };

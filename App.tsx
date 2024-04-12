@@ -7,16 +7,18 @@
 
 import React, {useEffect, useState} from 'react';
 import Login from './src/screens/Login';
-import Home from './src/screens/Home';
+import HomeTabbar from './src/screens/hometabbar/HomeTabbar';
 import SignUp from './src/screens/SignUp';
 import ResetPassword from './src/screens/ResetPassword';
 import Splash from './src/screens/Splash';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { useIsLoggedIn } from './src/helpers/useIsLoggedIn';
 
 const Stack = createNativeStackNavigator();
 
 function App() {
+  const [isLoggedIn] = useIsLoggedIn();
   const [isSplash, setIsSplash] = useState(true);
 
   useEffect(() => {
@@ -26,22 +28,18 @@ function App() {
     return () => clearTimeout(timeout);
   });
 
-  const initialRoute = () => {
-    
-  }
-
   return (
     <NavigationContainer>
       {isSplash ? (
-          <Splash/>
+        <Splash />
       ) : (
         <Stack.Navigator
-          initialRouteName="Login"
+          initialRouteName={isLoggedIn ? 'HomeTabbar' : 'Login'}
           screenOptions={{
             headerShown: false,
           }}>
           <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="HomeTabbar" component={HomeTabbar} />
           <Stack.Screen name="SignUp" component={SignUp} />
           <Stack.Screen name="ResetPassword" component={ResetPassword} />
         </Stack.Navigator>
