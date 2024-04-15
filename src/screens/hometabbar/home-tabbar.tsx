@@ -1,11 +1,11 @@
 import {TabRouter} from '@react-navigation/native';
 import React, {useState} from 'react';
 import {View, Text, Button, StyleSheet} from 'react-native';
-import {useIsLoggedIn} from '../../helpers/useIsLoggedIn';
+import {useIsLoggedIn} from '../../helpers/use-is-logged-in';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Home from './Home';
-import Setting from './Setting';
+import Home from './home';
+import Setting from './setting';
 
 function HomeTabbar({navigation}) {
   const Tab = createBottomTabNavigator();

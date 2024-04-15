@@ -6,14 +6,14 @@
  */
 
 import React, {useEffect, useState} from 'react';
-import Login from './src/screens/Login';
-import HomeTabbar from './src/screens/hometabbar/HomeTabbar';
-import SignUp from './src/screens/SignUp';
-import ResetPassword from './src/screens/ResetPassword';
-import Splash from './src/screens/Splash';
+import Login from './src/screens/login';
+import HomeTabbar from './src/screens/hometabbar/home-tabbar';
+import SignUp from './src/screens/sign-up';
+import ResetPassword from './src/screens/reset-password';
+import Splash from './src/screens/splash';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import { useIsLoggedIn } from './src/helpers/useIsLoggedIn';
+import { useIsLoggedIn } from './src/helpers/use-is-logged-in';
 
 const Stack = createNativeStackNavigator();
 

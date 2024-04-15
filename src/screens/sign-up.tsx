@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { usernameValidator } from "../helpers/usernameValidator";
-import { passwordValidator } from "../helpers/passwordValidator";
-import { emailValidator } from "../helpers/emailValidator";
+import { usernameValidator } from "../helpers/username-validator";
+import { passwordValidator } from "../helpers/password-validator";
+import { emailValidator } from "../helpers/email-validator";
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, SafeAreaView, Image } from "react-native";
 import BackButton from "../components/BackButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";

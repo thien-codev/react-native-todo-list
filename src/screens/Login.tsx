@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
-import {usernameValidator} from '../helpers/usernameValidator';
-import {passwordValidator} from '../helpers/passwordValidator';
+import {usernameValidator} from '../helpers/username-validator';
+import {passwordValidator} from '../helpers/password-validator';
 import {
   View,
   Text,
@@ -10,7 +10,7 @@ import {
   Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useIsLoggedIn } from '../helpers/useIsLoggedIn';
+import { useIsLoggedIn } from '../helpers/use-is-logged-in';
 
 function Login({navigation}) {
   const [_, setIsLoggedIn] = useIsLoggedIn();
