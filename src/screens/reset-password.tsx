@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, SafeAreaView, ActivityIndicator } from "react-native";
-import BackButton from "../components/BackButton";
+import BackButton from "../components/back-button";
 import { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 

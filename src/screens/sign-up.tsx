@@ -3,7 +3,7 @@ import { usernameValidator } from "../helpers/username-validator";
 import { passwordValidator } from "../helpers/password-validator";
 import { emailValidator } from "../helpers/email-validator";
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, SafeAreaView, Image } from "react-native";
-import BackButton from "../components/BackButton";
+import BackButton from "../components/back-button";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function SignUp({ navigation }) {

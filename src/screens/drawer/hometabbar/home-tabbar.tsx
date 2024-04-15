@@ -1,45 +1,55 @@
 import {TabRouter} from '@react-navigation/native';
 import React, {useState} from 'react';
 import {View, Text, Button, StyleSheet} from 'react-native';
-import {useIsLoggedIn} from '../../helpers/use-is-logged-in';
+import {useIsLoggedIn} from '../../../helpers/use-is-logged-in';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Home from './home';
-import Setting from './setting';
+import TaskNavigator from './detail-navigaton/task-navigator';
+import Profile from './profile';
 
 function HomeTabbar({navigation}) {
   const Tab = createBottomTabNavigator();
   const [_, setIsLoggedIn] = useIsLoggedIn();
-  const goBack = () => {
-    setIsLoggedIn(false);
-    navigation.reset({
-      index: 0,
-      routes: [{name: 'Login'}],
-    });
-  };
 
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarShowLabel: false,
         headerShadowVisible: true,
       }}
       initialRouteName="Home">
       <Tab.Screen
-        name="Home"
-        component={Home}
+        name="TaskNavigator"
+        component={TaskNavigator}
         options={{
+          title: 'Tasks',
           tabBarIcon: ({color}) => (
-            <MaterialCommunityIcons name="home" color={color} size={30} />
+            <MaterialCommunityIcons name="card-text" color={color} size={30} />
+          ),
+          tabBarActiveTintColor: '#003f5c',
+        }}
+      />
+
+      <Tab.Screen
+        name="Calendar"
+        component={Profile}
+        options={{
+          title: 'Calendar',
+          tabBarIcon: ({color}) => (
+            <MaterialCommunityIcons
+              name="calendar-range-outline"
+              color={color}
+              size={30}
+            />
           ),
           tabBarActiveTintColor: '#003f5c',
         }}
       />
       <Tab.Screen
-        name="Setting"
-        component={Setting}
+        name="Profile"
+        component={Profile}
         options={{
+          title: 'Profile',
           tabBarIcon: ({color}) => (
             <MaterialCommunityIcons name="account" color={color} size={30} />
           ),
@@ -49,19 +59,5 @@ function HomeTabbar({navigation}) {
     </Tab.Navigator>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#003f5c',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  title: {
-    fontWeight: 'bold',
-    fontSize: 50,
-    color: '#fb5b5a',
-  },
-});
 
 export default HomeTabbar;
