@@ -16,6 +16,7 @@ function HomeTabbar({navigation}) {
       screenOptions={{
         headerShown: false,
         headerShadowVisible: true,
+        tabBarStyle: { height: 60, paddingBottom: 6, paddingTop: 6 },
       }}
       initialRouteName="Home">
       <Tab.Screen

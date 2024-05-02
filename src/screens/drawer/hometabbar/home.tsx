@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import {
   Button,
   StyleSheet,
@@ -8,14 +8,20 @@ import {
   ScrollView,
   SectionList,
   LayoutAnimation,
+  Image,
+  Keyboard,
+  TouchableWithoutFeedback,
+  KeyboardAvoidingView,
+  KeyboardEventListener,
 } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import CategoryItem from '../../../components/category-item';
 import {categories} from '../../../types/category';
-import {useState} from 'react';
-import {TouchableWithoutFeedback} from 'react-native';
 import {defaultTaskList} from '../../../types/task';
 import TaskItem from '../../../components/task-item';
+import Empty from '../../../components/empty';
+import RBSheet from 'react-native-raw-bottom-sheet';
+import AddTaskSheet from '../../../components/add-task-sheet';
 
 enum TaskTime {
   today = 'Today',
@@ -24,8 +30,9 @@ enum TaskTime {
 }
 
 const Home = ({navigation}) => {
-  const [selectedIndex, setSelectedIndex] = useState(1);
+  const [selectedIndex, setSelectedIndex] = useState("1");
   const [isExpanded, setIsExpanded] = useState(true);
+  const refRBSheet = useRef();
 
   const collapse = () => {
     LayoutAnimation.easeInEaseOut();
@@ -71,61 +78,113 @@ const Home = ({navigation}) => {
           ))}
         </ScrollView>
 
-        <TouchableWithoutFeedback>
+        <TouchableWithoutFeedback
+          onPress={() => {
+            navigation.push('CreateCategory');
+          }}>
           <View style={styles.createCategory}>
             <MaterialCommunityIcons name="plus" color={'white'} size={26} />
           </View>
         </TouchableWithoutFeedback>
       </View>
-      {/* list of tasks */}
-      <View style={styles.taskList}>
-        <SectionList
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{}}
-          sections={[
-            {title: TaskTime.today, data: defaultTaskList},
-            {title: TaskTime.previous, data: defaultTaskList},
-            {title: TaskTime.future, data: defaultTaskList},
-          ]}
-          keyExtractor={(item, index) => item + index}
-          renderItem={({item}) =>
-            isExpanded && (
-              <TaskItem
-                item={item}
-                onPress={() => {
-                  navigation.push('TaskDetail', {task: item});
-                }}
-              />
-            )
-          }
-          renderSectionHeader={({section}) => (
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionHeaderTitle}>{section.title}</Text>
-              {!isExpanded && (
-                <Text
-                  style={{marginTop: 5, color: '#8699aa', fontWeight: '600'}}>
-                  {' (' + section.data.length + ')'}
-                </Text>
-              )}
-              <TouchableOpacity onPress={collapse}>
-                <MaterialCommunityIcons
-                  style={{marginTop: 5}}
-                  name={isExpanded ? 'chevron-down' : 'chevron-up'}
-                  color={'#8699aa'}
-                  size={20}
+      {defaultTaskList.filter(item => item.categoryId === selectedIndex)
+        .length === 0 ? (
+        <View style={{marginTop: 160, marginHorizontal: 16}}>
+          <Empty></Empty>
+        </View>
+      ) : (
+        <View style={styles.taskList}>
+          <SectionList
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{}}
+            sections={[
+              {
+                title: TaskTime.today,
+                data: defaultTaskList.filter(
+                  item => item.categoryId === selectedIndex,
+                ),
+              },
+              {
+                title: TaskTime.previous,
+                data: defaultTaskList.filter(
+                  item => item.categoryId === selectedIndex,
+                ),
+              },
+              {
+                title: TaskTime.future,
+                data: defaultTaskList.filter(
+                  item => item.categoryId === selectedIndex,
+                ),
+              },
+            ]}
+            keyExtractor={(item, index) => item + index}
+            renderItem={({item}) =>
+              isExpanded && (
+                <TaskItem
+                  item={item}
+                  onPress={() => {
+                    navigation.push('TaskDetail', {task: item});
+                  }}
                 />
-              </TouchableOpacity>
-            </View>
-          )}
-        />
-      </View>
+              )
+            }
+            renderSectionHeader={({section}) => (
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionHeaderTitle}>{section.title}</Text>
+                {!isExpanded && (
+                  <Text
+                    style={{marginTop: 5, color: '#8699aa', fontWeight: '600'}}>
+                    {' (' + section.data.length + ')'}
+                  </Text>
+                )}
+                <TouchableOpacity onPress={collapse}>
+                  <MaterialCommunityIcons
+                    style={{marginTop: 5}}
+                    name={isExpanded ? 'chevron-down' : 'chevron-up'}
+                    color={'#8699aa'}
+                    size={20}
+                  />
+                </TouchableOpacity>
+              </View>
+            )}
+          />
+        </View>
+      )}
 
       {/* create task */}
-      <TouchableWithoutFeedback>
+      <TouchableWithoutFeedback onPress={() => (refRBSheet.current as any)?.open()}>
         <View style={styles.createTask}>
           <MaterialCommunityIcons name="plus" color={'white'} size={26} />
         </View>
       </TouchableWithoutFeedback>
+
+      <RBSheet
+        ref={refRBSheet}
+        height={360}
+        openDuration={300}
+        closeDuration={300}
+        useNativeDriver={false}
+        customStyles={{
+          wrapper: {
+            backgroundColor: 'rgba(0,0,0,0.3)',
+          },
+          container: {
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+          },
+          draggableIcon: {
+            backgroundColor: '#AAA',
+          },
+        }}
+        customModalProps={{
+          animationType: 'fade',
+          statusBarTranslucent: true,
+        }}
+        customAvoidingViewProps={{
+          enabled: false,
+        }}>
+          <AddTaskSheet categories={categories}></AddTaskSheet>
+      </RBSheet>
     </View>
   );
 };
@@ -141,7 +200,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     position: 'absolute',
-    top: 60,
+    top: 40,
     left: 20,
     right: 20,
   },

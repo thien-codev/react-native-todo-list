@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    top: 60,
+    top: 40,
     left: 20,
     right: 20,
   },
